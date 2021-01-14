@@ -1,21 +1,49 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import * as eva from '@eva-design/eva';
+import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
+import { EvaIconsPack } from '@ui-kitten/eva-icons';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import BottomTabNavigator from './components/BottomTabNavigator';
+import CalendarScreen from './screens/calendar';
+import FoldersScreen from './screens/folders';
 
-export default function App() {
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+console.log(Tab);
+
+const HomeTabs = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+    <Tab.Navigator
+      initialRouteName="calendar"
+      headerMode="none"
+      tabBar={props => <BottomTabNavigator {...props} />}
+    >
+      <Tab.Screen name="calendar" component={CalendarScreen} />
+      <Tab.Screen name="folders" component={FoldersScreen} />
+    </Tab.Navigator>
+  )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+
+  return (
+    <React.Fragment>
+      <IconRegistry icons={EvaIconsPack} />
+      <ApplicationProvider {...eva} theme={eva.light}>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName="home"
+            headerMode="none"
+          >
+            <Stack.Screen name="home" component={HomeTabs} />
+          </Stack.Navigator>
+        </NavigationContainer>
+        <StatusBar style="auto" />
+      </ApplicationProvider>
+    </React.Fragment>
+  );
+}
